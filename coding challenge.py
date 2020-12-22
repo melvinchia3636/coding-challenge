@@ -1,5 +1,5 @@
 import math
-from itertools import zip_longest, combinations
+from itertools import zip_longest, combinations, islice, groupby
 import string
 from hashlib import sha256
 from collections import Counter
@@ -58,19 +58,22 @@ def lychrel(n):
 		if str(n) == str(n)[::-1]: return i
 		n += int(str(n)[::-1])
 	return 1
-
 def islands_perimeter(s): s,g = [[0]*(len(s[0])+2)]+[[0]+i+[0] for i in s]+[[0]*(len(s[0])+2)], lambda y, x: [i for i in [(y+1, x), (y-1, x), (y, x+1), (y, x-1)] if 0 <= i[1] < len(s[0]) and 0 <= i[0] < len(s) and not s[i[0]][i[1]]]; return len(sum(sum([[g(i, j) for j in range(len(s[i])) if s[i][j]] for i in range(len(s))], []), []))
 def rolling_cipher(t, n):w = string.ascii_lowercase; return ''.join(w[w.index(i)+n if w.index(i)+n < 26 else w.index(i)+n-26] for i in t)
 def divide(l, n): r = [[]]; [r[-1].append(l[i]) if sum(r[-1]+[l[i]]) <= n else r.append([l[i]]) for i in range(len(l))]; return r
 def convert_to_roman(n): r, n = 'IVXLCDM', list(map(int, str(n)))[::-1]; return ''.join(r[i*2]*n[i] if 0<n[i]<4 else r[i*2]*(n[i]-5)+r[i*2+1] if 5<n[i]<9 else r[i*2+1]+r[i*2] if n[i]==4 else r[i*2+2]+r[i*2] if n[i]==9 else '' for i in range(len(n)))[::-1]
 def generate_rug(n, d):l = [list(range(n)[i::-1])+list(range(n)[1:n-i:]) for i in range(0, n)];return  l if d=='left' else [list(reversed(i)) for i in l]
 def simon_says(l): t = '0'+''.join(j+')' if j.isdigit() else '+-*'['asm'.index(j[0])] for i in l if i.startswith('Simon says') for j in i.split()[2:] if j != 'by'); return eval('('*t.count(')')+t)
-dif_ciph, group, classify_rug, k_th_binary_inlist, people_sort, longest_run, get_notes_distribution, bw_transform, get_sha256_hash, is_self_describing, is_unfair_hurdle, printgrid, checkout, rearrange, chosen_wine, champions, three_sum, flatten_list, find_missing, factorial, transpose_matrix, leaderboards, get_length, scrambled, pricey_prod, count_ones, bridge_shuffle = lambda s: [ord(s[0])]+[ord(s[i])-ord(s[i-1]) for i in range(1, len(s))] if type(s) == str else chr(s[0])+''.join([chr(sum(s[:i])+s[i]) for i in range(1, len(s))]), lambda l, s: [list([j for j in i if j]) for i in list(zip_longest(*[l[i:i+math.ceil(len(l)/s)] for i in range(0, len(l), math.ceil(len(l)/s))]))], lambda p: 'perfect' if all(i==list(reversed(i)) for i in p) and all(i==tuple(reversed(i)) for i in zip(*p)) else 'vertically symmetric' if all(i==list(reversed(i)) for i in p) else 'horizontally symmetric' if all(i==tuple(reversed(i)) for i in zip(*p)) else 'imperfect', lambda n, k: list(reversed(sorted(reversed([bin(i) for i in range(2**n)]), key=lambda x: x.count('1'))))[k-1], lambda l, a: sorted(l, key=lambda x: eval('x.'+a)), lambda l: max(len(max(''.join(str(int(l[i-1]+1==l[i])) for i in range(1, len(l))).split('0'), key=len))+1, len(max(''.join(str(int(l[i-1]-1==l[i])) for i in range(1, len(l))).split('0'), key=len))+1), lambda s: Counter(j for i in s for j in i['notes'] if j in range(1, 6)), lambda t:''.join(i[-1] for i in sorted(t[i:]+t[:i] for i in range(len(t)))), lambda t: sha256(t.encode('utf-8')).hexdigest(), lambda n: len(str(n)) % 2 == 0 and all(int(x) == str(n).count(y) for x, y in (str(n)[i:i+2] for i in range(0, len(str(n)), 2))), lambda h:len(h)>=4 or h[0].count(' ')/(h[0].count('#')-1)<4, lambda r, c: [list(i) for i in zip(*[range(1, r*c+1)[i:i+r] for i in range(0, r*c, r)])], lambda c: sum(i['prc']*i['qty']*(1.06 if i['taxable'] else 1) for i in c), lambda s: ' '.join(i[1] for i in sorted((re.search(r'\d', i).group(), i.replace(re.search(r'\d', i).group(), '')) for i in s.split())), lambda w: sorted(w, key=lambda x: x['price'])[1]['name'] if len(w) > 1 else w[0]['name'] if w else None, lambda t: sorted([(i['wins']*3+i['draws'], i['scored']-i['conceded'], i['name']) for i in t])[-1][-1], lambda l: list(map(list, dict.fromkeys(sorted([tuple(i) for i in list(combinations(l, 3)) if not sum(i)], key=lambda x: l.index(x[0]))))), lambda l: sum(map(flatten_list,l),[]) if isinstance(l,list) else [l], lambda l: sum(range(len(min(l, key=len)), len(max(l, key=len))+1)) - sum(len(i) for i in l) if l and all(l) else 0, lambda n: n*factorial(n-1) if n>0 else 1, lambda l: list(map(list, zip(*l))), lambda u: sorted(u, key=lambda k: k['score']+k['reputation']*2, reverse=1), lambda l: sum(map(get_length, l)) if isinstance(l, list) else 1 , lambda w, m: [i for i in w if re.match("^"+m.replace('*', r'\w')+"$", i)], lambda d: sorted([i for i in d if d[i] >= 500], key=lambda k: -d[k]), lambda l: len([i for i in ''.join(map(str, l)).split('0') if len(i)>=2]), lambda m, n: [i for i in sum(zip_longest(m, n), ()) if i]
-
 def boxes(w, k=1, c=0):
 	for i in w: c, k = (c+i, k) if c+i<=10 else (i, k+1)
 	return k
-	
+def num_then_char(l): i=iter(sorted([i for i in sum(l,[]) if type(i) in [int, float]])+sorted([i for i in sum(l,[]) if type(i) == str])); return [list(islice(i, j)) for j in [len(k) for k in l]]
+def check_pattern(l, p): l = [[str(j[1]) for j in i[1]] for i in groupby(sorted(list(zip(p, l))), lambda x: x[0])]; return all(len(i) == 1 for i in [set(i) for i in l]) and len(set([str(i) for i in [set(i) for i in l]])) == len(set(p)) 
+def order_people(a, p): l = [list(range(1, p+1)[i:i+a[1]]) for i in range(0, p, a[1])]; l = [i+[0]*(a[1]-len(i)) for i in l] + [[0]*a[1]]*(a[0]-len(l)); l = [l[i][::-1] if i%2 else l[i] for i in range(len(l))]; return l if a[0]*a[1] >= p else 'overcrowded'
+def has_consecutive_series(v1, v2): l = [sum(i) for i in zip_longest(v1, v2, fillvalue=0)]; return sum(range(min(l), max(l)+1)) == sum(l)
+
+dif_ciph, group, classify_rug, k_th_binary_inlist, people_sort, longest_run, get_notes_distribution, bw_transform, get_sha256_hash, is_self_describing, is_unfair_hurdle, printgrid, checkout, rearrange, chosen_wine, champions, three_sum, flatten_list, find_missing, factorial, transpose_matrix, leaderboards, get_length, scrambled, pricey_prod, count_ones, bridge_shuffle, vertical_txt, can_traverse, cutting_grass,transform_matrix = lambda s: [ord(s[0])]+[ord(s[i])-ord(s[i-1]) for i in range(1, len(s))] if type(s) == str else chr(s[0])+''.join([chr(sum(s[:i])+s[i]) for i in range(1, len(s))]), lambda l, s: [list([j for j in i if j]) for i in list(zip_longest(*[l[i:i+math.ceil(len(l)/s)] for i in range(0, len(l), math.ceil(len(l)/s))]))], lambda p: 'perfect' if all(i==list(reversed(i)) for i in p) and all(i==tuple(reversed(i)) for i in zip(*p)) else 'vertically symmetric' if all(i==list(reversed(i)) for i in p) else 'horizontally symmetric' if all(i==tuple(reversed(i)) for i in zip(*p)) else 'imperfect', lambda n, k: list(reversed(sorted(reversed([bin(i) for i in range(2**n)]), key=lambda x: x.count('1'))))[k-1], lambda l, a: sorted(l, key=lambda x: eval('x.'+a)), lambda l: max(len(max(''.join(str(int(l[i-1]+1==l[i])) for i in range(1, len(l))).split('0'), key=len))+1, len(max(''.join(str(int(l[i-1]-1==l[i])) for i in range(1, len(l))).split('0'), key=len))+1), lambda s: Counter(j for i in s for j in i['notes'] if j in range(1, 6)), lambda t:''.join(i[-1] for i in sorted(t[i:]+t[:i] for i in range(len(t)))), lambda t: sha256(t.encode('utf-8')).hexdigest(), lambda n: len(str(n)) % 2 == 0 and all(int(x) == str(n).count(y) for x, y in (str(n)[i:i+2] for i in range(0, len(str(n)), 2))), lambda h:len(h)>=4 or h[0].count(' ')/(h[0].count('#')-1)<4, lambda r, c: [list(i) for i in zip(*[range(1, r*c+1)[i:i+r] for i in range(0, r*c, r)])], lambda c: sum(i['prc']*i['qty']*(1.06 if i['taxable'] else 1) for i in c), lambda s: ' '.join(i[1] for i in sorted((re.search(r'\d', i).group(), i.replace(re.search(r'\d', i).group(), '')) for i in s.split())), lambda w: sorted(w, key=lambda x: x['price'])[1]['name'] if len(w) > 1 else w[0]['name'] if w else None, lambda t: sorted([(i['wins']*3+i['draws'], i['scored']-i['conceded'], i['name']) for i in t])[-1][-1], lambda l: list(map(list, dict.fromkeys(sorted([tuple(i) for i in list(combinations(l, 3)) if not sum(i)], key=lambda x: l.index(x[0]))))), lambda l: sum(map(flatten_list,l),[]) if isinstance(l,list) else [l], lambda l: sum(range(len(min(l, key=len)), len(max(l, key=len))+1)) - sum(len(i) for i in l) if l and all(l) else 0, lambda n: n*factorial(n-1) if n>0 else 1, lambda l: list(map(list, zip(*l))), lambda u: sorted(u, key=lambda k: k['score']+k['reputation']*2, reverse=1), lambda l: sum(map(get_length, l)) if isinstance(l, list) else 1 , lambda w, m: [i for i in w if re.match("^"+m.replace('*', r'\w')+"$", i)], lambda d: sorted([i for i in d if d[i] >= 5400], key=lambda k: -d[k]), lambda l: len([i for i in ''.join(map(str, l)).split('0') if len(i)>=2]), lambda m, n: [i for i in sum(zip_longest(m, n), ()) if i], lambda t: [list(i) for i in zip_longest(*t.split(), fillvalue=' ')], lambda x: all(abs(i-j) < 2 for i, j in zip([sum(i) for i in zip(*x)], [sum(i) for i in zip(*x)][1:])), lambda l, *c: [i if sum(i) >= len(i) else 'Done' for i in [[j-sum(c[0:i+1]) for j in l] for i in range(len(c))]], lambda l: [[sum(l[i])+sum(list(zip(*l))[j])-l[i][j]*2 for j in range(len(l[0]))] for i in range(len(l))]
+
 Test.assert_equals(boxes([7, 1, 2, 6, 1, 2, 3, 5, 9, 2, 1, 2, 5]), 5)
 Test.assert_equals(boxes([2, 7, 1, 3, 3, 4, 7, 4, 1, 8, 2]), 5)
 Test.assert_equals(boxes([1, 3, 3, 3, 2, 1, 1, 9, 7, 10, 8, 6, 1, 2, 9]), 8)
@@ -537,3 +540,290 @@ Test.assert_equals(bridge_shuffle(['C', 'C', 'C', 'C'], ['D']), ['C', 'D', 'C', 
 Test.assert_equals(bridge_shuffle([1, 3, 5, 7], [2, 4, 6]), [1, 2, 3, 4, 5, 6, 7])
 Test.assert_equals(bridge_shuffle([10, 9, 8], [1, 2, 3, 4]), [10, 1, 9, 2, 8, 3, 4])
 Test.assert_equals(bridge_shuffle(['h', 'h', 'h'], ['a', 'a', 'a']), ['h', 'a', 'h', 'a', 'h', 'a'])
+
+Test.assert_equals(num_then_char([
+    [1, 2, 4, 3, "a", "b"],
+    [6, "c", 5],
+    [7, "d"],
+    ["f", "e", 8]
+]), [[1, 2, 3, 4, 5, 6], [7, 8, 'a'], ['b', 'c'], ['d', 'e', 'f']])
+
+Test.assert_equals(num_then_char([
+    [1, 2, 4.4, "f", "a", "b"],
+    [0],
+    [0.5, "d","X",3,"s"],
+    ["f", "e", 8],
+    ["p","Y","Z"],
+    [12,18]
+]), [[0, 0.5, 1, 2, 3, 4.4], [8], [12, 18, 'X', 'Y', 'Z'], ['a', 'b', 'd'], ['e', 'f', 'f'], ['p', 's']])
+
+Test.assert_equals(num_then_char([
+    [10, 2],
+    ["a",3],
+    [2.2, "d","h",6,"s",14,1],
+    ["f", "e"],
+    ["p","y","z","V"],
+    [5]
+]), [[1, 2], [2.2, 3], [5, 6, 10, 14, 'V', 'a', 'd'], ['e', 'f'], ['h', 'p', 's', 'y'], ['z']])
+
+Test.assert_equals(num_then_char([
+    [10, 2,6,6.5,8.1,"q","w","a","s"],
+    ["f",4],
+    [2, 3,"h",6,"x",1,0],
+    ["g"],
+    ["p",7,"j","k","l"],
+    [5,"C","A","B"],
+    ["L",9]
+]), [[0, 1, 2, 2, 3, 4, 5, 6, 6], [6.5, 7], [8.1, 9, 10, 'A', 'B', 'C', 'L'], ['a'], ['f', 'g', 'h', 'j', 'k'], ['l', 'p', 'q', 's'], ['w', 'x']])
+
+Test.assert_equals(vertical_txt("Holy bananas"), [['H', 'b'], ['o', 'a'], ['l', 'n'], ['y', 'a'], [' ', 'n'], [' ', 'a'], [' ', 's']])
+Test.assert_equals(vertical_txt("Hello fellas"), [['H', 'f'], ['e', 'e'], ['l', 'l'], ['l', 'l'], ['o', 'a'], [' ', 's']])
+Test.assert_equals(vertical_txt("I hope you have a great day"), [['I', 'h', 'y', 'h', 'a', 'g', 'd'], [' ', 'o', 'o', 'a', ' ', 'r', 'a'], [' ', 'p', 'u', 'v', ' ', 'e', 'y'], [' ', 'e', ' ', 'e', ' ', 'a', ' '], [' ', ' ', ' ', ' ', ' ', 't', ' ']])
+Test.assert_equals(vertical_txt("Piri piri over there"), [['P', 'p', 'o', 't'], ['i', 'i', 'v', 'h'], ['r', 'r', 'e', 'e'], ['i', 'i', 'r', 'r'], [' ', ' ', ' ', 'e']])
+Test.assert_equals(vertical_txt("Skill the baboon king"), [['S', 't', 'b', 'k'], ['k', 'h', 'a', 'i'], ['i', 'e', 'b', 'n'], ['l', ' ', 'o', 'g'], ['l', ' ', 'o', ' '], [' ', ' ', 'n', ' ']])
+Test.assert_equals(vertical_txt("He took one for the team"), [['H', 't', 'o', 'f', 't', 't'], ['e', 'o', 'n', 'o', 'h', 'e'], [' ', 'o', 'e', 'r', 'e', 'a'], [' ', 'k', ' ', ' ', ' ', 'm']])
+Test.assert_equals(vertical_txt("Schneid! 700 in to the face!"), [['S', '7', 'i', 't', 't', 'f'], ['c', '0', 'n', 'o', 'h', 'a'], ['h', '0', ' ', ' ', 'e', 'c'], ['n', ' ', ' ', ' ', ' ', 'e'], ['e', ' ', ' ', ' ', ' ', '!'], ['i', ' ', ' ', ' ', ' ', ' '], ['d', ' ', ' ', ' ', ' ', ' '], ['!', ' ', ' ', ' ', ' ', ' ']])
+Test.assert_equals(vertical_txt("I hope you are ready for your daily dose of skill"), [['I', 'h', 'y', 'a', 'r', 'f', 'y', 'd', 'd', 'o', 's'], [' ', 'o', 'o', 'r', 'e', 'o', 'o', 'a', 'o', 'f', 'k'], [' ', 'p', 'u', 'e', 'a', 'r', 'u', 'i', 's', ' ', 'i'], [' ', 'e', ' ', ' ', 'd', ' ', 'r', 'l', 'e', ' ', 'l'], [' ', ' ', ' ', ' ', 'y', ' ', ' ', 'y', ' ', ' ', 'l']])
+Test.assert_equals(vertical_txt("0 11 222 3333 44444 6666666 77777777 888888888 9999999999"), [['0', '1', '2', '3', '4', '6', '7', '8', '9'], [' ', '1', '2', '3', '4', '6', '7', '8', '9'], [' ', ' ', '2', '3', '4', '6', '7', '8', '9'], [' ', ' ', ' ', '3', '4', '6', '7', '8', '9'], [' ', ' ', ' ', ' ', '4', '6', '7', '8', '9'], [' ', ' ', ' ', ' ', ' ', '6', '7', '8', '9'], [' ', ' ', ' ', ' ', ' ', '6', '7', '8', '9'], [' ', ' ', ' ', ' ', ' ', ' ', '7', '8', '9'], [' ', ' ', ' ', ' ', ' ', ' ', ' ', '8', '9'], [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '9']])
+
+Test.assert_equals(can_traverse([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 1, 0, 0, 0, 0, 0], 
+	[0, 0, 1, 1, 0, 0, 1, 0, 0], 
+	[0, 1, 1, 1, 1, 1, 1, 1, 0]
+]), False)
+
+Test.assert_equals(can_traverse([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 1, 0, 0, 0, 0, 0], 
+	[0, 0, 1, 1, 1, 0, 1, 0, 0], 
+	[0, 1, 1, 1, 1, 1, 1, 1, 0]
+]), True)
+
+Test.assert_equals(can_traverse([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 1, 0, 0, 0, 0, 0], 
+	[0, 0, 1, 1, 1, 1, 1, 0, 0], 
+	[0, 1, 1, 1, 1, 1, 1, 1, 0]
+]), True)
+
+Test.assert_equals(can_traverse([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 1, 0, 0, 0, 0, 0], 
+	[0, 1, 1, 1, 1, 1, 1, 0, 0], 
+	[0, 1, 1, 1, 1, 1, 1, 1, 0]
+]), False)
+
+Test.assert_equals(can_traverse([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 1, 1, 0, 0, 0, 0], 
+	[0, 0, 1, 1, 1, 1, 1, 0, 0], 
+	[0, 1, 1, 1, 1, 1, 1, 1, 0]
+]), True)
+
+Test.assert_equals(can_traverse([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 1, 0, 0, 0, 1, 0, 0], 
+	[0, 1, 1, 1, 0, 1, 1, 1, 0]
+]), True)
+
+Test.assert_equals(can_traverse([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 1, 1, 1, 0, 1, 1, 1, 0]
+]), True)
+
+Test.assert_equals(can_traverse([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 1, 0, 0, 0, 0, 1], 
+	[0, 0, 1, 1, 1, 0, 1, 1, 1], 
+	[0, 1, 1, 1, 1, 1, 1, 1, 1]
+]), True)
+
+Test.assert_equals(can_traverse([
+	[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+	[0, 0, 0, 1, 0, 0, 0, 0, 1], 
+	[0, 0, 1, 1, 1, 0, 1, 0, 1], 
+	[0, 1, 1, 1, 1, 1, 1, 1, 1]
+]), False)
+
+Test.assert_equals(cutting_grass([4, 4, 4, 4], 1, 1, 1, 1), 
+	[[3, 3, 3, 3], [2, 2, 2, 2], [1, 1, 1, 1], "Done"])
+
+Test.assert_equals(cutting_grass([5, 6, 7, 5], 1, 2, 1), 
+	[[4, 5, 6, 4], [2, 3, 4, 2], [1, 2, 3, 1]])
+
+Test.assert_equals(cutting_grass([8, 9, 9, 8, 8], 2, 3, 2, 1), 
+	[[6, 7, 7, 6, 6], [3, 4, 4, 3, 3], [1, 2, 2, 1, 1], "Done"])
+
+Test.assert_equals(cutting_grass([1, 0, 1, 1], 1, 1, 1), 
+	["Done", "Done", "Done"])
+
+Test.assert_equals(cutting_grass([4, 5, 4, 5], 2, 1, 1), 
+	[[2, 3, 2, 3], [1, 2, 1, 2], "Done"])
+
+Test.assert_equals(cutting_grass([4, 2, 2], 2, 1, 1), 
+	["Done", "Done", "Done"])
+
+
+Test.assert_equals(check_pattern([[1, 1], [2, 2], [1, 1], [2, 2]], "ABAB"), True)
+Test.assert_equals(check_pattern([[1, 2], [1, 2], [1, 2], [1, 2]], "AAAA"), True)
+Test.assert_equals(check_pattern([[1, 2], [1, 3], [1, 4], [1, 2]], "ABCA"), True)
+Test.assert_equals(check_pattern([[1, 2, 3], [1, 2, 3], [3, 2, 1], [3, 2, 1]], "AABB"), True)
+Test.assert_equals(check_pattern([[8, 8, 8, 8], [7, 7, 7, 7], [6, 6, 6, 6], [5, 5, 5, 5]], "ABCD"), True)
+Test.assert_equals(check_pattern([[8, 8, 8, 8], [7, 7, 7, 7], [6, 6, 6, 6], [5, 5, 5, 5]], "DCBA"), True)
+Test.assert_equals(check_pattern([[8], [7], [6], [6]], "ABCC"), True)
+Test.assert_equals(check_pattern([[8], [9], [9], [9]], "ABBB"), True)
+Test.assert_equals(check_pattern([[1, 1], [2, 2], [1, 1], [1, 2]], "ABAB"), False)
+Test.assert_equals(check_pattern([[1, 2], [1, 2], [2, 2], [3, 2]], "AAAA"), False)
+Test.assert_equals(check_pattern([[8], [9], [9], [8]], "ABBB"), False)
+Test.assert_equals(check_pattern([[8], [7], [6], [5]], "ABCC"), False)
+Test.assert_equals(check_pattern([[8, 8, 8, 8], [7, 7, 7, 7], [6, 6, 6, 6], [5, 5, 5, 5]], "DDBA"), False)
+Test.assert_equals(check_pattern([[1, 2], [1, 2], [1, 2], [1, 2]], "AABA"), False)
+
+Test.assert_equals(transform_matrix(
+[
+[1, 0, 0, 0, 1], 
+[0, 1, 0, 0, 0], 
+[0, 0, 0, 1, 0], 
+[0, 1, 0, 1, 0], 
+[0, 1, 0, 0, 0]])
+,[
+[1, 5, 2, 4, 1], 
+[2, 2, 1, 3, 2], 
+[2, 4, 1, 1, 2], 
+[3, 3, 2, 2, 3], 
+[2, 2, 1, 3, 2]
+])
+
+Test.assert_equals(transform_matrix([
+[1, 0, 0, 0], 
+[0, 1, 0, 0], 
+[0, 0, 1, 0]
+]), [
+[0, 2, 2, 1], 
+[2, 0, 2, 1], 
+[2, 2, 0, 1]
+])
+
+Test.assert_equals(transform_matrix([
+[1, 1], 
+[1, 1], 
+[1, 1]
+]), [
+[3, 3], 
+[3, 3], 
+[3, 3]
+])
+
+Test.assert_equals(transform_matrix([
+[1, 0, 0], 
+[0, 1, 0], 
+[0, 0, 1]
+]), [
+[0, 2, 2], 
+[2, 0, 2], 
+[2, 2, 0]
+])
+
+Test.assert_equals(transform_matrix([
+[1, 1, 1], 
+[0, 0, 1], 
+[0, 0, 1]
+]), [
+[2, 2, 4], 
+[2, 2, 2], 
+[2, 2, 2]
+])
+
+Test.assert_equals(transform_matrix([
+[1, 1, 1], 
+[0, 1, 1], 
+[0, 0, 1]
+]), [
+[2, 3, 4], 
+[3, 2, 3], 
+[2, 3, 2]
+])
+
+Test.assert_equals(three_sum([0, 1, -1, -1, 2]), [[0, 1, -1], [-1, -1, 2]])
+Test.assert_equals(three_sum([0, 0, 0, 5, -5]), [[0, 0, 0], [0, 5, -5]])
+Test.assert_equals(three_sum([0, -1, 1, 0, -1, 1]), [[0, -1, 1], [0, 1, -1], [-1, 1, 0], [-1, 0, 1], [1, 0, -1]])
+Test.assert_equals(three_sum([0, 5, 5, 0, 0]), [[0, 0, 0]])
+Test.assert_equals(three_sum([0, 5, -5, 0, 0]), [[0, 5, -5], [0, 0, 0], [5, -5, 0]])
+Test.assert_equals(three_sum([1, 2, 3, -5, 8, 9, -9, 0]), [[1, 8, -9], [2, 3, -5], [9, -9, 0]])
+Test.assert_equals(three_sum([0, 0, 0]), [[0, 0, 0]])
+Test.assert_equals(three_sum([1, 5, 5, 2]), [])
+Test.assert_equals(three_sum([1, 1]), [])
+Test.assert_equals(three_sum([]), [])
+
+
+Test.assert_equals(order_people([5, 3], 15), [
+	[1, 2, 3],
+	[6, 5, 4],
+	[7, 8, 9],
+	[12, 11, 10],
+	[13, 14, 15]
+])
+
+Test.assert_equals(order_people([4, 3], 5), [
+	[1, 2, 3],
+	[0, 5, 4],
+	[0, 0, 0],
+	[0, 0, 0]
+])
+
+Test.assert_equals(order_people([3, 3], 8), [
+	[1, 2, 3],
+	[6, 5, 4],
+	[7, 8, 0]
+])
+
+Test.assert_equals(order_people([2, 4], 5), [
+	[1, 2, 3, 4],
+	[0, 0, 0, 5]
+])
+
+Test.assert_equals(order_people([4, 4], 15), [
+	[1, 2, 3, 4],
+	[8, 7, 6, 5],
+	[9, 10, 11, 12],
+	[0, 15, 14, 13]
+])
+
+Test.assert_equals(order_people([4, 4], 12), [
+	[1, 2, 3, 4],
+	[8, 7, 6, 5],
+	[9, 10, 11, 12],
+	[0, 0, 0, 0]
+])
+
+Test.assert_equals(order_people([2, 2], 4), [
+	[1, 2],
+	[4, 3]
+])
+
+Test.assert_equals(order_people([2, 2], 5),"overcrowded")
+
+Test.assert_equals(order_people([2, 2], 3), [
+	[1, 2],
+	[0, 3]
+])
+
+Test.assert_equals(order_people([3, 4], 1), [
+	[1, 0, 0, 0],
+	[0, 0, 0, 0],
+	[0, 0, 0, 0]
+])
+
+Test.assert_equals(order_people([2, 4], 10), "overcrowded")
+
+Test.assert_equals(has_consecutive_series([1, 2, 3], [1, 1, 1]), True)
+Test.assert_equals(has_consecutive_series([1, 2, 3], [1, 2, 1]), False)
+Test.assert_equals(has_consecutive_series([4, 6, -5, 8, 4], [-2, -3, 9, -3, 2]), True)
+Test.assert_equals(has_consecutive_series([12, 3], [0, 10, 14, 15, 16]), True)
+Test.assert_equals(has_consecutive_series([8, 6, 10], [25, 28, 25, 26, 28, 29]), False)
+Test.assert_equals(has_consecutive_series([11, 5, 3], [-2, 5, 8, 12]), True)
+Test.assert_equals(has_consecutive_series([11, 5, 3], [-2, 5, 8, 11]), False)
